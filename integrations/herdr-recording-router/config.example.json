@@ -1,0 +1,7 @@
+{
+  "handy_exe": "/mnt/c/Users/<windows-user>/AppData/Local/Handy/handy.exe",
+  "windows_wrapper_dir": "/mnt/c/Users/<windows-user>/AppData/Local/HandyRecordingRouterPrototype",
+  "windows_wrapper_dir_windows": "C:\\Users\\<windows-user>\\AppData\\Local\\HandyRecordingRouterPrototype",
+  "windows_build_checkout_windows": "C:\\Users\\<windows-user>\\source\\Handy-herdr-build",
+  "wsl_distro": "<wsl-distribution>"
+}

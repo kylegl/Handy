@@ -6,17 +6,38 @@ from __future__ import annotations
 import contextlib
 import json
 import os
-from pathlib import Path
 import subprocess
 import sys
 import time
+from pathlib import Path
 
 STATE_PATH = Path("/tmp/herdr-recording-router-prototype.json")
 METADATA_SOURCE = "plugin:local.recording-router-prototype"
-HANDY_EXE = os.environ.get(
-    "HANDY_EXE", "/mnt/c/Users/LINK/AppData/Local/Handy/handy.exe"
-)
 MAX_AGE_SECONDS = 15 * 60
+
+
+def config_path() -> Path:
+    configured = os.environ.get("HANDY_HERDR_CONFIG")
+    if configured:
+        return Path(configured).expanduser()
+    config_home = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config"))
+    return config_home / "handy-herdr" / "config.json"
+
+
+def load_config() -> dict:
+    try:
+        return json.loads(config_path().read_text())
+    except FileNotFoundError as error:
+        raise RuntimeError(
+            f"Missing {config_path()}; run install-prototype.sh first"
+        ) from error
+
+
+def handy_executable() -> str:
+    configured = os.environ.get("HANDY_EXE") or load_config().get("handy_exe")
+    if not configured:
+        raise RuntimeError("handy_exe is not configured")
+    return configured
 
 
 def load_state() -> dict | None:
@@ -94,7 +115,7 @@ def toggle() -> int:
         STATE_PATH.write_text(json.dumps(state))
         set_indicator(state, "… TRANSCRIBING")
 
-    result = subprocess.run([HANDY_EXE, "--toggle-post-process"], check=False)
+    result = subprocess.run([handy_executable(), "--toggle-post-process"], check=False)
     if result.returncode != 0:
         clear_indicator(state)
         STATE_PATH.unlink(missing_ok=True)
