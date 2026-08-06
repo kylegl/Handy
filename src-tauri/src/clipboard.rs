@@ -4,6 +4,8 @@ use crate::settings::TypingTool;
 use crate::settings::{get_settings, AutoSubmitKey, ClipboardHandling, PasteMethod};
 use enigo::{Direction, Enigo, Key, Keyboard};
 use log::info;
+#[cfg(target_os = "windows")]
+use std::os::windows::process::CommandExt;
 use std::process::Command;
 #[cfg(target_os = "linux")]
 use std::sync::OnceLock;
@@ -637,8 +639,12 @@ fn send_key_combo_via_xdotool(paste_method: &PasteMethod) -> Result<(), String> 
 fn paste_via_external_script(text: &str, script_path: &str) -> Result<(), String> {
     info!("Pasting via external script: {}", script_path);
 
-    let output = Command::new(script_path)
-        .arg(text)
+    let mut command = Command::new(script_path);
+    command.arg(text);
+    #[cfg(target_os = "windows")]
+    command.creation_flags(0x08000000); // CREATE_NO_WINDOW
+
+    let output = command
         .output()
         .map_err(|e| format!("Failed to execute external script '{}': {}", script_path, e))?;
 
