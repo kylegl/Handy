@@ -5,6 +5,12 @@
 
 use log::warn;
 use std::sync::Arc;
+#[cfg(target_os = "windows")]
+use std::{
+    os::windows::process::CommandExt,
+    process::{Command, Stdio},
+    sync::atomic::{AtomicBool, Ordering},
+};
 use tauri::{AppHandle, Manager};
 
 use crate::actions::ACTION_MAP;
@@ -12,6 +18,72 @@ use crate::managers::audio::AudioRecordingManager;
 use crate::settings::get_settings;
 use crate::transcription_coordinator::is_transcribe_binding;
 use crate::TranscriptionCoordinator;
+
+#[cfg(target_os = "windows")]
+static HERDR_DELEGATED_POST_PROCESS_KEY_HELD: AtomicBool = AtomicBool::new(false);
+#[cfg(target_os = "windows")]
+const CREATE_NO_WINDOW: u32 = 0x08000000;
+
+#[cfg(target_os = "windows")]
+fn foreground_is_windows_terminal() -> bool {
+    use windows::Win32::UI::WindowsAndMessaging::{GetClassNameW, GetForegroundWindow};
+
+    unsafe {
+        let window = GetForegroundWindow();
+        if window.0.is_null() {
+            return false;
+        }
+
+        let mut class_name = [0u16; 256];
+        let length = GetClassNameW(window, &mut class_name);
+        length > 0
+            && String::from_utf16_lossy(&class_name[..length as usize])
+                == "CASCADIA_HOSTING_WINDOW_CLASS"
+    }
+}
+
+#[cfg(target_os = "windows")]
+fn delegate_post_process_to_herdr(binding_id: &str, is_pressed: bool) -> bool {
+    if binding_id != "transcribe_with_post_process" {
+        return false;
+    }
+
+    if !is_pressed {
+        return HERDR_DELEGATED_POST_PROCESS_KEY_HELD.swap(false, Ordering::SeqCst);
+    }
+
+    if !foreground_is_windows_terminal() {
+        return false;
+    }
+
+    let command = concat!(
+        "/home/linkdevk/.local/bin/herdr plugin action invoke ",
+        "local.recording-router-prototype.toggle >/dev/null 2>&1 || ",
+        "/mnt/c/Users/LINK/AppData/Local/Handy/handy.exe --toggle-post-process"
+    );
+    match Command::new("wsl.exe")
+        .args(["-d", "Ubuntu-20.04", "--", "sh", "-lc", command])
+        .creation_flags(CREATE_NO_WINDOW)
+        .stdin(Stdio::null())
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .spawn()
+    {
+        Ok(_) => {
+            HERDR_DELEGATED_POST_PROCESS_KEY_HELD.store(true, Ordering::SeqCst);
+            true
+        }
+        Err(error) => {
+            warn!("Failed to delegate post-processing shortcut to Herdr: {error}");
+            false
+        }
+    }
+}
+
+#[cfg(not(target_os = "windows"))]
+fn delegate_post_process_to_herdr(_binding_id: &str, _is_pressed: bool) -> bool {
+    false
+}
 
 /// Handle a shortcut event from either implementation.
 ///
@@ -32,6 +104,10 @@ pub fn handle_shortcut_event(
     hotkey_string: &str,
     is_pressed: bool,
 ) {
+    if delegate_post_process_to_herdr(binding_id, is_pressed) {
+        return;
+    }
+
     let settings = get_settings(app);
 
     // Transcribe bindings are handled by the coordinator.
