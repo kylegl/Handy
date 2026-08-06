@@ -215,3 +215,13 @@ See the [Troubleshooting](README.md#troubleshooting) section in README.md.
 - **Full contributor workflow:** [CONTRIBUTING.md](CONTRIBUTING.md).
 
 **Commits:** Use conventional commit prefixes (`feat:`, `fix:`, `docs:`, `refactor:`, `chore:`). Focus the message on _why_, not _what_.
+
+## Herdr recording-router integration
+
+The canonical source lives in this monorepo under
+`integrations/herdr-recording-router`. Read that directory's `README.md` before
+changing, building, installing, or relocating the integration.
+
+Treat the Windows build checkout, installed Handy executable, copied Windows wrapper,
+and `/tmp` route state as generated runtime artifacts—not sources to edit or commit.
+The official `upstream` remote is fetch-only; push maintained work only to `origin`.
