@@ -91,7 +91,7 @@ Windows-native Rust, Tauri, CMake, and Vulkan tooling should build from a normal
 Create the disposable build checkout from the pushed integration branch:
 
 ```powershell
-git clone --branch prototype/herdr-shortcut-delegation `
+git clone --branch main `
   https://github.com/kylegl/Handy.git `
   C:\Users\LINK\source\Handy-herdr-build
 ```
@@ -101,7 +101,7 @@ Refresh an existing checkout instead of editing it:
 ```powershell
 cd C:\Users\LINK\source\Handy-herdr-build
 git fetch origin
-git reset --hard origin/prototype/herdr-shortcut-delegation
+git reset --hard origin/main
 ```
 
 Build:
