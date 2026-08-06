@@ -219,8 +219,9 @@ See the [Troubleshooting](README.md#troubleshooting) section in README.md.
 ## Herdr recording-router integration
 
 The canonical source lives in this monorepo under
-`integrations/herdr-recording-router`. Read that directory's `README.md` before
-changing, building, installing, or relocating the integration.
+`integrations/herdr-recording-router`. Read
+[`.agents/docs/recording-router.md`](.agents/docs/recording-router.md) before changing,
+building, installing, configuring, or relocating the integration.
 
 Treat the Windows build checkout, installed Handy executable, copied Windows wrapper,
 and `/tmp` route state as generated runtime artifacts—not sources to edit or commit.
