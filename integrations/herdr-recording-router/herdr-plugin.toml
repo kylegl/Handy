@@ -1,0 +1,12 @@
+id = "local.recording-router-prototype"
+name = "Recording Router Prototype"
+version = "0.1.0"
+min_herdr_version = "0.8.0"
+description = "PROTOTYPE: start transcription in a Herdr pane and route its text back there"
+platforms = ["linux"]
+
+[[actions]]
+id = "toggle"
+title = "Toggle pane-targeted recording"
+contexts = ["global"]
+command = ["python3", "router.py", "toggle"]
