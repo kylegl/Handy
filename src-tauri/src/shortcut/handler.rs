@@ -10,6 +10,7 @@ use std::{
     os::windows::process::CommandExt,
     process::{Command, Stdio},
     sync::atomic::{AtomicBool, Ordering},
+    thread,
 };
 use tauri::{AppHandle, Manager};
 
@@ -56,28 +57,48 @@ fn delegate_post_process_to_herdr(binding_id: &str, is_pressed: bool) -> bool {
         return false;
     }
 
-    let command = concat!(
-        "/home/linkdevk/.local/bin/herdr plugin action invoke ",
-        "local.recording-router-prototype.toggle >/dev/null 2>&1 || ",
-        "/mnt/c/Users/LINK/AppData/Local/Handy/handy.exe --toggle-post-process"
-    );
-    match Command::new("wsl.exe")
-        .args(["-d", "Ubuntu-20.04", "--", "sh", "-lc", command])
-        .creation_flags(CREATE_NO_WINDOW)
-        .stdin(Stdio::null())
-        .stdout(Stdio::null())
-        .stderr(Stdio::null())
-        .spawn()
-    {
-        Ok(_) => {
-            HERDR_DELEGATED_POST_PROCESS_KEY_HELD.store(true, Ordering::SeqCst);
-            true
+    let command = std::env::var("HANDY_HERDR_COMMAND").unwrap_or_else(|_| {
+        concat!(
+            "PATH=\"$HOME/.local/bin:$PATH\"; ",
+            "herdr plugin action invoke local.recording-router-prototype.toggle"
+        )
+        .to_string()
+    });
+    let distro = std::env::var("HANDY_HERDR_WSL_DISTRO")
+        .ok()
+        .filter(|value| !value.trim().is_empty());
+
+    thread::spawn(move || {
+        let mut delegate = Command::new("wsl.exe");
+        if let Some(distro) = distro {
+            delegate.args(["-d", &distro]);
         }
-        Err(error) => {
-            warn!("Failed to delegate post-processing shortcut to Herdr: {error}");
-            false
+        let status = delegate
+            .args(["--", "sh", "-lc", &command])
+            .creation_flags(CREATE_NO_WINDOW)
+            .stdin(Stdio::null())
+            .stdout(Stdio::null())
+            .stderr(Stdio::null())
+            .status();
+
+        if status.is_ok_and(|status| status.success()) {
+            return;
         }
-    }
+
+        warn!("Failed to delegate post-processing shortcut to Herdr; falling back to Handy");
+        if let Ok(executable) = std::env::current_exe() {
+            let _ = Command::new(executable)
+                .arg("--toggle-post-process")
+                .creation_flags(CREATE_NO_WINDOW)
+                .stdin(Stdio::null())
+                .stdout(Stdio::null())
+                .stderr(Stdio::null())
+                .spawn();
+        }
+    });
+
+    HERDR_DELEGATED_POST_PROCESS_KEY_HELD.store(true, Ordering::SeqCst);
+    true
 }
 
 #[cfg(not(target_os = "windows"))]

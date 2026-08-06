@@ -17,8 +17,8 @@ Configure Handy:
 
 1. Keep **Transcribe with Post-Processing** bound to `Ctrl+B`.
 2. Set **Paste method** to **External Script**.
-3. Set the script path to
-   `C:\Users\LINK\AppData\Local\HandyRecordingRouterPrototype\recording-router.cmd`.
+3. Set the script path to the `windows_wrapper_dir_windows` value from the
+   generated machine configuration, followed by `\recording-router.cmd`.
 4. Disable **Auto Submit**. The router sends Enter to the selected destination.
 
 ## Use
