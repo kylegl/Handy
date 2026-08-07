@@ -57,7 +57,7 @@ from pathlib import Path
 import sys
 
 template, output, router, distro = sys.argv[1:]
-distro_args = f'-d "{distro}" ' if distro else ""
+distro_args = f"-d {distro} " if distro else ""
 text = Path(template).read_text()
 text = text.replace("@ROUTER_PATH@", router).replace("@WSL_DISTRO_ARGS@", distro_args)
 Path(output).write_text(text)
