@@ -6,6 +6,12 @@
 Agents maintaining or configuring this integration must first read the canonical
 [maintenance and placement guide](../../.agents/docs/recording-router.md).
 
+## Machine configuration
+
+The installer creates `${XDG_CONFIG_HOME:-$HOME/.config}/handy/herdr-recording-router.json` for machine-specific Handy, Windows wrapper, build-checkout, and WSL paths. Set `HANDY_HERDR_CONFIG` to override this location.
+
+The generated file is untracked and must not be committed. See [`config.example.json`](config.example.json) for its schema and the [maintenance and placement guide](../../.agents/docs/recording-router.md) for operational details.
+
 ## Install
 
 ```bash

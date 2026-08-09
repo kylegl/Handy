@@ -3,8 +3,8 @@
 set -euo pipefail
 
 root=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/herdr-handy"
-config_path="${HANDY_HERDR_CONFIG:-$config_dir/config.json}"
+config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/handy"
+config_path="${HANDY_HERDR_CONFIG:-$config_dir/herdr-recording-router.json}"
 
 local_app_data_windows=$(powershell.exe -NoProfile -Command '[Environment]::GetFolderPath("LocalApplicationData")' | tr -d '\r')
 user_profile_windows=$(powershell.exe -NoProfile -Command '[Environment]::GetFolderPath("UserProfile")' | tr -d '\r')

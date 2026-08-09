@@ -10,7 +10,7 @@ Tracked files use portable paths. Machine-specific values live only in the local
 | --- | --- | --- |
 | Canonical monorepo | `${HOME}/repos/Handy` by convention | Source of truth for the Handy fork and router |
 | Router source | `<repo>/integrations/herdr-recording-router` | Herdr plugin, templates, and installer source |
-| Machine configuration | `${XDG_CONFIG_HOME:-$HOME/.config}/herdr-handy/config.json` | Untracked paths for one machine |
+| Machine configuration | `${XDG_CONFIG_HOME:-$HOME/.config}/handy/herdr-recording-router.json` | Untracked paths for one machine |
 | Windows build checkout | `windows_build_checkout_windows` from machine configuration | Disposable checkout used only to compile Handy |
 | Installed Handy | `handy_exe` from machine configuration | Runtime executable |
 | Installed Windows wrapper | `windows_wrapper_dir` from machine configuration | Generated `.cmd` and `.ps1` files |
@@ -35,7 +35,7 @@ Tracked files use portable paths. Machine-specific values live only in the local
 The router reads its configuration from:
 
 1. `HANDY_HERDR_CONFIG`, when set;
-2. otherwise `${XDG_CONFIG_HOME:-$HOME/.config}/herdr-handy/config.json`.
+2. otherwise `${XDG_CONFIG_HOME:-$HOME/.config}/handy/herdr-recording-router.json`.
 
 `HANDY_EXE` overrides the configured `handy_exe` for one invocation. Handy's Windows shortcut delegation accepts these optional user environment variables:
 
