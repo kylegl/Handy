@@ -27,6 +27,7 @@ dist-ssr
 *.sw?
 
 .claude/
+.pi-subagents/
 
 /target/
 recording_*
