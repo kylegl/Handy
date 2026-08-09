@@ -9,7 +9,7 @@ Agents maintaining or configuring this integration must first read the canonical
 ## Install
 
 ```bash
-cd ~/repos/handy-herdr/integrations/herdr-recording-router
+cd ~/repos/herdr-handy/integrations/herdr-recording-router
 ./install-prototype.sh
 ```
 
@@ -36,5 +36,5 @@ falls back to clipboard paste plus Enter in the active Windows application.
 ## Reset
 
 ```bash
-python3 ~/repos/handy-herdr/integrations/herdr-recording-router/router.py reset
+python3 ~/repos/herdr-handy/integrations/herdr-recording-router/router.py reset
 ```

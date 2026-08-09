@@ -21,7 +21,7 @@ def config_path() -> Path:
     if configured:
         return Path(configured).expanduser()
     config_home = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config"))
-    return config_home / "handy-herdr" / "config.json"
+    return config_home / "herdr-handy" / "config.json"
 
 
 def load_config() -> dict:
