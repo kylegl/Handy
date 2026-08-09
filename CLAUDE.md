@@ -1,4 +1,4 @@
-# herdr-handy
+# Handy
 
 ## Issue tracker
 

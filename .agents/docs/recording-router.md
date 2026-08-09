@@ -8,7 +8,7 @@ Tracked files use portable paths. Machine-specific values live only in the local
 
 | Component | Portable location | Ownership |
 | --- | --- | --- |
-| Canonical monorepo | `${HOME}/repos/herdr-handy` by convention | Source of truth for the Handy fork and router |
+| Canonical monorepo | `${HOME}/repos/Handy` by convention | Source of truth for the Handy fork and router |
 | Router source | `<repo>/integrations/herdr-recording-router` | Herdr plugin, templates, and installer source |
 | Machine configuration | `${XDG_CONFIG_HOME:-$HOME/.config}/herdr-handy/config.json` | Untracked paths for one machine |
 | Windows build checkout | `windows_build_checkout_windows` from machine configuration | Disposable checkout used only to compile Handy |
@@ -51,7 +51,7 @@ The default delegation command resolves `herdr` through `$HOME/.local/bin` and i
 Run from the canonical router directory:
 
 ```bash
-cd "${HOME}/repos/herdr-handy/integrations/herdr-recording-router"
+cd "${HOME}/repos/Handy/integrations/herdr-recording-router"
 ./install-prototype.sh
 ```
 
